@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <utility>
 #include <array>
+#include <algorithm>
 
 namespace eld
 {
@@ -108,30 +109,25 @@ namespace eld
     class swap_endian<T, false>
     {
     public:
+
+        static_assert(!std::is_same<T, long double>::value,
+                "Long double swapping is not implemented correctly");
+
         static T swap(const T &u)
         {
             constexpr size_t typeSize = sizeof(T);
             if (typeSize == sizeof(uint8_t))
                 return u;
 
-            // swap bytes
             std::array<uint8_t, typeSize> byteArray{};
-            auto rawIterBegin = reinterpret_cast<const uint8_t *>(&u);
-            std::copy(rawIterBegin, std::next(rawIterBegin, typeSize), byteArray.begin());
+            auto begin = reinterpret_cast<const uint8_t *>(&u),
+                end = std::next(begin, typeSize);
 
-            typename decltype(byteArray)::iterator iterBegin = byteArray.begin(),
-                    iterEnd = std::prev(byteArray.end());
+            // copy to raw byte array
+            std::copy(begin, end, byteArray.begin());
+            std::reverse(byteArray.begin(), byteArray.end());
 
-            while (iterBegin < iterEnd)
-            {
-                uint8_t temp = *iterEnd;
-                *iterEnd = *iterBegin;
-                *iterBegin = temp;
-                // std::advance(iterBegin);
-                iterBegin = std::next(iterBegin);
-                iterEnd = std::prev(iterEnd);
-            }
-
+            // copy swapped byte array back
             T res{};
             std::copy(byteArray.cbegin(), byteArray.cend(), reinterpret_cast<uint8_t *>(&res));
             return res;
