@@ -108,6 +108,7 @@ namespace eld
     template<typename T>
     class swap_endian<T, false>
     {
+        static_assert(std::is_pod<T>::value, "T must be a POD type");
     public:
 
         static_assert(!std::is_same<T, long double>::value,

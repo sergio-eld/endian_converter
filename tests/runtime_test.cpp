@@ -19,15 +19,15 @@ bool test_endian_conversion()
     std::copy(input.rbegin(), input.rend(), expected.begin());
 
     T from{};
-    std::copy(input.cbegin(), input.cend(), reinterpret_cast<uint8_t*>(&from));
+    std::copy(input.cbegin(), input.cend(), reinterpret_cast<uint8_t *>(&from));
 
     T swapped = swap_endian_v(from);
-    uint8_t *begin = reinterpret_cast<uint8_t*>(&swapped),
-        *end = std::next(begin, sizeof(T));
+    uint8_t *begin = reinterpret_cast<uint8_t *>(&swapped),
+            *end = std::next(begin, sizeof(T));
     std::copy(begin, end, output.begin());
 
     return std::equal(expected.cbegin(), expected.cend(),
-        output.cbegin());
+                      output.cbegin());
 }
 
 TEST(EndianConversion, uint8_t)
@@ -58,6 +58,19 @@ TEST(EndianConversion, TestFloat)
 TEST(EndianConversio, TestDouble)
 {
     ASSERT_TRUE(test_endian_conversion<double>());
+}
+
+struct abc
+{
+    int a;
+    float b;
+    int c;
+};
+
+
+TEST(EndianConversio, TestStruct)
+{
+    ASSERT_TRUE(test_endian_conversion<abc>());
 }
 
 //TEST(EndianConversio, TestLongDouble)

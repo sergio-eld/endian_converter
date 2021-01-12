@@ -13,6 +13,8 @@ target_include_directories(${PROJECT_NAME} INTERFACE
         $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
         )
 
+add_library(ELD::${PROJECT_NAME} ALIAS ${PROJECT_NAME})
+
 # TODO: this must be passed to config file on installation! Endianness must be rediscovered within the target project
 # test for endianness
 include(TestBigEndian)
@@ -71,7 +73,7 @@ if (RUN_TESTS)
     add_executable(test.runtime_test tests/runtime_test.cpp)
     target_link_libraries(test.runtime_test
             PRIVATE
-                ${PROJECT_NAME}
+                ELD::${PROJECT_NAME}
                 GTest::GTest
             )
 
