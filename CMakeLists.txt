@@ -5,7 +5,7 @@ project(EndianConverter LANGUAGES CXX VERSION 1.0.0)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
-option(RUN_TESTS "Run tests" ON)
+option(BUILD_TESTS "Run tests" ON)
 
 add_library(${PROJECT_NAME} INTERFACE)
 target_include_directories(${PROJECT_NAME} INTERFACE
@@ -27,7 +27,7 @@ else()
 endif()
 
 # testing
-if (RUN_TESTS)
+if (BUILD_TESTS)
     enable_testing()
     find_package(GTest REQUIRED)
 
